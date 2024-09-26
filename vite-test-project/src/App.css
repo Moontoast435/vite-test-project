@@ -1,0 +1,13 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+  height: 100vh;
+}
+
+.create-todo-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
