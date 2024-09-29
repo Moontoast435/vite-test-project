@@ -1,7 +1,8 @@
-import { useState, useRef, MutableRefObject } from "react";
+import { useState } from "react";
 // import reactLogo from "./assets/react.svg";
 // import viteLogo from "/vite.svg";
 import "./App.css";
+import edit from "./assets/edit-text.png";
 
 // Define the type for your object
 interface Todo {
@@ -23,26 +24,33 @@ function App() {
 
   return (
     <>
-      <h1>Todo-List App</h1>
-      <div className="create-todo-container">
-        <button onClick={updateTodos}>Create Todo</button>
-        <label>Todo: </label>
-        <input
-          type="text"
-          placeholder="enter todo here..."
-          onChange={(e) => {
-            setInputValue(e.currentTarget.value);
-          }}
-          value={inputValue}
-        ></input>
-      </div>
-      <div className="todos-container">
-        {todos.map((todo) => (
-          <div key={todo.id}>
-            <p>ID: {todo.id}</p>
-            <p>Description: {todo.description}</p>
-          </div>
-        ))}
+      <div className="todo-app-wrapper">
+        <h1>Todo-List App</h1>
+        <div className="create-todo-container">
+          <button onClick={updateTodos}>Create Todo</button>
+          <label>Todo: </label>
+          <input
+            type="text"
+            placeholder="enter todo here..."
+            onChange={(e) => {
+              setInputValue(e.currentTarget.value);
+            }}
+            value={inputValue}
+          ></input>
+        </div>
+        <div className="todos-container">
+          {todos.map((todo) => (
+            <div key={todo.id} className="todo">
+              <div className="todo-header">
+                <p className="todo-id">ID: {todo.id}</p>
+                <img src={edit} className="todo-edit-btn" />
+              </div>
+              <p className="todo-description">
+                Description: {todo.description}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
     </>
   );
