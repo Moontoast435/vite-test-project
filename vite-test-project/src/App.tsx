@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // import reactLogo from "./assets/react.svg";
 // import viteLogo from "/vite.svg";
 import "./App.css";
@@ -13,21 +13,58 @@ interface Todo {
 
 function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [inputValue, setInputValue] = useState("");
 
   // Function to update the todos
-  const updateTodos = () => {
-    // Example of updating the array with a new object
-    setTodos([...todos, { id: todos.length + 1, description: inputValue }]);
-    setInputValue("");
+  const createTodo = () => {
+    if (inputValue != "") {
+      setInputValue("");
+    } else {
+      return;
+    }
   };
+
+  useEffect(() => {
+    // Fetch data when the component mounts
+    fetch("https://localhost:44343/api/Todo/GetAllTodos", {
+      method: "GET", // Specify the request method (GET by default)
+      headers: {
+        "Content-Type": "application/json", // Ensure the server knows we're expecting JSON
+      },
+      mode: "cors", // Enable cross-origin requests
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setTodos(data); // Set the data in state
+        setLoading(false); // Set loading to false
+      })
+      .catch((error) => {
+        setError(error.message); // Set error message if there is an error
+        setLoading(false); // Set loading to false in case of error
+      });
+  }, []); // Empty dependency array to run only once when component mounts
+
+  if (loading) {
+    return <div>Loading...</div>; // Show loading state
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>; // Show error state if something goes wrong
+  }
 
   return (
     <>
       <div className="todo-app-wrapper">
         <h1>Todo-List App</h1>
         <div className="create-todo-container">
-          <button onClick={updateTodos}>Create Todo</button>
+          <button onClick={createTodo}>Create Todo</button>
           <label>Todo: </label>
           <input
             type="text"
