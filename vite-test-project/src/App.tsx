@@ -1,14 +1,10 @@
 import { useEffect, useState } from "react";
-// import reactLogo from "./assets/react.svg";
-// import viteLogo from "/vite.svg";
 import "./App.css";
 import edit from "./assets/edit-text.png";
 
-// Define the type for your object
 interface Todo {
   id: number;
   description: string;
-  // Add more properties as needed
 }
 
 function App() {
@@ -17,23 +13,45 @@ function App() {
   const [error, setError] = useState(null);
   const [inputValue, setInputValue] = useState("");
 
-  // Function to update the todos
-  const createTodo = () => {
-    if (inputValue != "") {
-      setInputValue("");
-    } else {
-      return;
-    }
+  const sendCreateTodo = (description: string) => {
+    setLoading(true);
+    fetch(
+      "https://localhost:44343/api/Todo/CreateTodo?description=" + description,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        mode: "cors",
+      }
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (todos) {
+          setTodos([...todos, data.Todo]);
+        } else {
+          setTodos([data.Todo]);
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        setError(error.message);
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
-    // Fetch data when the component mounts
     fetch("https://localhost:44343/api/Todo/GetAllTodos", {
-      method: "GET", // Specify the request method (GET by default)
+      method: "GET",
       headers: {
-        "Content-Type": "application/json", // Ensure the server knows we're expecting JSON
+        "Content-Type": "application/json",
       },
-      mode: "cors", // Enable cross-origin requests
+      mode: "cors",
     })
       .then((response) => {
         if (!response.ok) {
@@ -42,21 +60,21 @@ function App() {
         return response.json();
       })
       .then((data) => {
-        setTodos(data); // Set the data in state
-        setLoading(false); // Set loading to false
+        setTodos(data.todos);
+        setLoading(false);
       })
       .catch((error) => {
-        setError(error.message); // Set error message if there is an error
-        setLoading(false); // Set loading to false in case of error
+        setError(error.message);
+        setLoading(false);
       });
-  }, []); // Empty dependency array to run only once when component mounts
+  }, []);
 
   if (loading) {
-    return <div>Loading...</div>; // Show loading state
+    return <div>Loading...</div>;
   }
 
   if (error) {
-    return <div>Error: {error}</div>; // Show error state if something goes wrong
+    return <div>Error: {error}</div>;
   }
 
   return (
@@ -64,7 +82,9 @@ function App() {
       <div className="todo-app-wrapper">
         <h1>Todo-List App</h1>
         <div className="create-todo-container">
-          <button onClick={createTodo}>Create Todo</button>
+          <button onClick={() => sendCreateTodo(inputValue)}>
+            Create Todo
+          </button>
           <label>Todo: </label>
           <input
             type="text"
@@ -76,17 +96,17 @@ function App() {
           ></input>
         </div>
         <div className="todos-container">
-          {todos.map((todo) => (
-            <div key={todo.id} className="todo">
-              <div className="todo-header">
-                <p className="todo-id">ID: {todo.id}</p>
-                <img src={edit} className="todo-edit-btn" />
+          {todos &&
+            todos.map((todo) => (
+              <div key={todo.id} className="todo">
+                <div className="todo-header">
+                  <img src={edit} className="todo-edit-btn" />
+                </div>
+                <p className="todo-description">
+                  Description: {todo.description}
+                </p>
               </div>
-              <p className="todo-description">
-                Description: {todo.description}
-              </p>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
     </>
