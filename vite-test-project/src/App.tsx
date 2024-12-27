@@ -14,6 +14,10 @@ function App() {
   const [inputValue, setInputValue] = useState("");
 
   const sendCreateTodo = (description: string) => {
+    if (description.trim() == "") {
+      alert("No description entered.");
+      return;
+    }
     setLoading(true);
     fetch(
       "https://localhost:44343/api/Todo/CreateTodo?description=" + description,
