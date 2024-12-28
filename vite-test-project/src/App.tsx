@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import edit from "./assets/edit-text.png";
+import EditTodo from "./components/EditTodo";
 
 interface Todo {
   id: number;
@@ -12,6 +13,8 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [inputValue, setInputValue] = useState("");
+  const [open, setOpen] = useState(false);
+  const [editTodo, setEditTodo] = useState<Todo>();
 
   const sendCreateTodo = (description: string) => {
     if (description.trim() == "") {
@@ -47,6 +50,11 @@ function App() {
         setError(error.message);
         setLoading(false);
       });
+  };
+
+  const onClickEditHandle = (editTodo: Todo) => {
+    setOpen(true);
+    setEditTodo(editTodo);
   };
 
   useEffect(() => {
@@ -104,7 +112,11 @@ function App() {
             todos.map((todo) => (
               <div key={todo.id} className="todo">
                 <div className="todo-header">
-                  <img src={edit} className="todo-edit-btn" />
+                  <img
+                    src={edit}
+                    className="todo-edit-btn"
+                    onClick={() => onClickEditHandle(todo)}
+                  />
                 </div>
                 <p className="todo-description">
                   Description: {todo.description}
@@ -112,6 +124,7 @@ function App() {
               </div>
             ))}
         </div>
+        <EditTodo todo={editTodo} open={open} />
       </div>
     </>
   );
