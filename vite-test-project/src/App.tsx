@@ -14,7 +14,7 @@ function App() {
   const [error, setError] = useState(null);
   const [inputValue, setInputValue] = useState("");
   const [open, setOpen] = useState(false);
-  const [editTodo, setEditTodo] = useState<Todo>();
+  const [editTodo, setEditTodo] = useState<Todo>({ id: 1, description: "" });
 
   const sendCreateTodo = (description: string) => {
     if (description.trim() == "") {

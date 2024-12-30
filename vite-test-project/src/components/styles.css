@@ -1,0 +1,23 @@
+.edit-todo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgba(128, 128, 128, 0.686);
+}
+
+.edit-todo-dialog {
+  /* border: 1px solid rgba(211, 211, 211, 0.395); */
+  border-radius: 5px;
+  width: 20%;
+  height: 20%;
+  background-color: rgb(0, 0, 0);
+  padding: 10px;
+}
+
+.edit-todo-button {
+  margin-top: 15px;
+}
