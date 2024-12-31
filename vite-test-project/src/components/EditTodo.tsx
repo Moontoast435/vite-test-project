@@ -6,17 +6,26 @@ interface Todo {
   id: number;
 }
 
-export default function EditTodo(props: { open: Boolean; todo: Todo }) {
-  const { open, todo } = props;
+export default function EditTodo(props: {
+  onShow: () => void;
+  todo: Todo;
+  isActive: Boolean;
+}) {
+  let { onShow, todo, isActive } = props;
+  const [description, setDescription] = useState(todo.description);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleEditClick = () => {};
+  const handleEditClick = () => {
+    sendEditTodo(description);
+  };
 
-  const sendEditTodo = () => {
+  const sendEditTodo = (description: string) => {
     fetch(
       "https://localhost:44343/api/Todo/EditTodo?id=" +
         todo.id +
         "&description=" +
-        todo.description,
+        description,
       {
         method: "PUT",
         headers: {
@@ -32,14 +41,27 @@ export default function EditTodo(props: { open: Boolean; todo: Todo }) {
         return response.json();
       })
       .then((data) => {
-        // setEditOpen(false);
+        onShow();
+        setLoading(false);
+        console.log(data);
       })
-      .catch((error) => {});
+      .catch((error) => {
+        setLoading(false);
+        setError(error);
+      });
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <>
-      {open && todo && (
+      {isActive && todo && (
         <div className="edit-todo-container">
           <div className="edit-todo-dialog">
             <p>Edit todo</p>
@@ -48,6 +70,8 @@ export default function EditTodo(props: { open: Boolean; todo: Todo }) {
               type="text"
               id="editTodoDescription"
               placeholder={todo.description}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
             ></input>
             <button
               className="edit-todo-button"

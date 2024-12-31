@@ -13,8 +13,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [inputValue, setInputValue] = useState("");
-  const [open, setOpen] = useState(false);
-  const [editTodo, setEditTodo] = useState<Todo>({ id: 1, description: "" });
+  const [open, setOpen] = useState(NaN);
 
   const sendCreateTodo = (description: string) => {
     if (description.trim() == "") {
@@ -52,12 +51,16 @@ function App() {
       });
   };
 
-  const onClickEditHandle = (editTodo: Todo) => {
-    setOpen(true);
-    setEditTodo(editTodo);
+  const onClickEditHandle = () => {
+    setOpen(NaN);
+    sendGetAllTodos();
   };
 
   useEffect(() => {
+    sendGetAllTodos();
+  }, []);
+
+  const sendGetAllTodos = () => {
     fetch("https://localhost:44343/api/Todo/GetAllTodos", {
       method: "GET",
       headers: {
@@ -79,7 +82,7 @@ function App() {
         setError(error.message);
         setLoading(false);
       });
-  }, []);
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -109,22 +112,26 @@ function App() {
         </div>
         <div className="todos-container">
           {todos &&
-            todos.map((todo) => (
+            todos.map((todo, i) => (
               <div key={todo.id} className="todo">
                 <div className="todo-header">
                   <img
                     src={edit}
                     className="todo-edit-btn"
-                    onClick={() => onClickEditHandle(todo)}
+                    onClick={() => setOpen(i)}
                   />
                 </div>
                 <p className="todo-description">
                   Description: {todo.description}
                 </p>
+                <EditTodo
+                  todo={todo}
+                  onShow={() => onClickEditHandle()}
+                  isActive={open === i}
+                />
               </div>
             ))}
         </div>
-        <EditTodo todo={editTodo} open={open} />
       </div>
     </>
   );
