@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import edit from "./assets/edit-text.png";
-import EditTodo from "./components/EditTodo";
+import EditTodo from "./components/EditTodo/EditTodo";
+import ClearAllTodos from "./components/ClearAllTodos/ClearAllTodos";
 
 interface Todo {
   id: number;
@@ -109,6 +110,7 @@ function App() {
             }}
             value={inputValue}
           ></input>
+          <ClearAllTodos onShow={() => onClickEditHandle()} />
         </div>
         <div className="todos-container">
           {todos &&
