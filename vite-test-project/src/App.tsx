@@ -3,6 +3,7 @@ import "./App.css";
 import edit from "./assets/edit-text.png";
 import EditTodo from "./components/EditTodo/EditTodo";
 import ClearAllTodos from "./components/ClearAllTodos/ClearAllTodos";
+import DeleteTodo from "./components/DeleteTodo/DeleteTodo";
 
 interface Todo {
   id: number;
@@ -122,6 +123,7 @@ function App() {
                     className="todo-edit-btn"
                     onClick={() => setOpen(i)}
                   />
+                  <DeleteTodo onShow={() => onClickEditHandle()} todo={todo} />
                 </div>
                 <p className="todo-description">
                   Description: {todo.description}
