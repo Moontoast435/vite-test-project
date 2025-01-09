@@ -21,4 +21,5 @@
 
 .edit-todo-button {
   margin-top: 15px;
+  cursor: pointer;
 }

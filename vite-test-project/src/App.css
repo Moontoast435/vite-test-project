@@ -21,6 +21,7 @@
 
 .todo-edit-btn {
   width: 20px;
+  cursor: pointer;
 }
 
 .todos-container {

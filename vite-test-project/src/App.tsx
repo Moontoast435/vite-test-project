@@ -4,10 +4,13 @@ import edit from "./assets/edit-text.png";
 import EditTodo from "./components/EditTodo/EditTodo";
 import ClearAllTodos from "./components/ClearAllTodos/ClearAllTodos";
 import DeleteTodo from "./components/DeleteTodo/DeleteTodo";
+import MarkAsComplete from "./components/MarkAsComplete/MarkAsComplete";
 
 interface Todo {
   id: number;
   description: string;
+  complete: boolean;
+  userId: string;
 }
 
 function App() {
@@ -128,6 +131,10 @@ function App() {
                 <p className="todo-description">
                   Description: {todo.description}
                 </p>
+                <MarkAsComplete
+                  onShow={() => onClickEditHandle()}
+                  todo={todo}
+                />
                 <EditTodo
                   todo={todo}
                   onShow={() => onClickEditHandle()}
