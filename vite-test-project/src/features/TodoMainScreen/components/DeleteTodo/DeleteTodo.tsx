@@ -1,6 +1,6 @@
 import React from "react";
 import "./styles.css";
-import bin from "../../assets/bin.png";
+import bin from "../../../../assets/bin.png";
 
 interface Todo {
   description: string;
