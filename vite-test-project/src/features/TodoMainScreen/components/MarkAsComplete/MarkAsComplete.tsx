@@ -1,9 +1,4 @@
-interface Todo {
-  description: string;
-  id: number;
-  complete: boolean;
-  userId: string;
-}
+import { Todo } from "../../types/todoInterfaceTypes";
 
 export default function MarkAsComplete(props: {
   onShow: () => void;

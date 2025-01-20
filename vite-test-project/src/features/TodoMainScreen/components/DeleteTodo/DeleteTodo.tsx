@@ -1,11 +1,8 @@
 import React from "react";
+import { Todo } from "../../types/todoInterfaceTypes";
+
 import "./styles.css";
 import bin from "../../../../assets/bin.png";
-
-interface Todo {
-  description: string;
-  id: number;
-}
 
 export default function DeleteTodo(props: { onShow: () => void; todo: Todo }) {
   let { onShow, todo } = props;

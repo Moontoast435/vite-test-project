@@ -5,13 +5,7 @@ import EditTodo from "../EditTodo/EditTodo";
 import ClearAllTodos from "../ClearAllTodos/ClearAllTodos";
 import DeleteTodo from "../DeleteTodo/DeleteTodo";
 import MarkAsComplete from "../MarkAsComplete/MarkAsComplete";
-
-type Todo = {
-  id: number;
-  description: string;
-  complete: boolean;
-  userId: string;
-};
+import { Todo } from "../../types/todoInterfaceTypes";
 
 export default function TodosInterface() {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -98,7 +92,6 @@ export default function TodosInterface() {
   }
   return (
     <div className="todo-app-wrapper">
-      <h1>Todo-List App</h1>
       <div className="create-todo-container">
         <button onClick={() => sendCreateTodo(inputValue)}>Create Todo</button>
         <label>Todo: </label>

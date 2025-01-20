@@ -1,0 +1,29 @@
+.navbar {
+  height: 80px;
+  width: 100%;
+  position: relative;
+  top: 0;
+  left: 0;
+  margin: 0 0 20px 0;
+  background-color: rgb(41, 71, 110);
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.navbar-title {
+  font-size: 24px;
+}
+
+.navbar-account-buttons {
+  width: 300px;
+}
+
+.navbar-loggedout-buttons {
+  display: flex;
+  justify-content: space-around;
+}

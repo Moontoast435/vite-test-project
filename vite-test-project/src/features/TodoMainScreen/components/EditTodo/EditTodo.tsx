@@ -1,10 +1,7 @@
 import { useState } from "react";
-import "./styles.css";
+import { Todo } from "../../types/todoInterfaceTypes";
 
-interface Todo {
-  description: string;
-  id: number;
-}
+import "./styles.css";
 
 export default function EditTodo(props: {
   onShow: () => void;
