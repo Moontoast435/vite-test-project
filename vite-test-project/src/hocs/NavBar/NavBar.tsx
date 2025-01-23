@@ -1,8 +1,18 @@
 import { PropsWithChildren, useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import "./styles.css";
 
 export default function NavBar(props: PropsWithChildren) {
   const [signedIn, setSignedIn] = useState(false);
+  const navigate = useNavigate();
+
+  const handleNavigateToLogIn = () => {
+    navigate("/");
+  };
+
+  const handleNavigateToSignUp = () => {
+    navigate("/signup");
+  };
 
   return (
     <div className="navbar-container">
@@ -13,8 +23,8 @@ export default function NavBar(props: PropsWithChildren) {
             <button>Log out</button>
           ) : (
             <div className="navbar-loggedout-buttons">
-              <button>Log in</button>
-              <button>Sign up</button>
+              <button onClick={() => handleNavigateToLogIn()}>Log in</button>
+              <button onClick={() => handleNavigateToSignUp()}>Sign up</button>
             </div>
           )}
         </div>
