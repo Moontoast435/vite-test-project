@@ -1,0 +1,16 @@
+.signUpFieldset {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+}
+
+form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+input {
+  height: 30px;
+  margin-top: 15px;
+}
