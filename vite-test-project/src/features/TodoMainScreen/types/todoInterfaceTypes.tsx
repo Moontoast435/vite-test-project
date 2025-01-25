@@ -10,3 +10,9 @@ export type Account = {
   userName: string;
   password: string;
 };
+
+export type ErrorSignUp = {
+  usernameError: string | null;
+  passwordError: string | null;
+  passwordMatchError: string | null;
+};
