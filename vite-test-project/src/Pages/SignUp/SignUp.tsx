@@ -8,6 +8,9 @@ import {
   validatePassword,
   validatePasswordMatch,
 } from "../../utils/validation";
+
+import { sendCreateAccount } from "../../utils/requests";
+
 import "./styles.css";
 
 export default function SignUp() {
@@ -15,8 +18,24 @@ export default function SignUp() {
   const [passwordInput, setPasswordInput] = useState("");
   const [confirmPasswordInput, setConfirmPasswordInput] = useState("");
   const [error, setError] = useState<ErrorSignUp | null>(null);
+  const [createAccountError, setCreateAccountError] = useState<
+    string | undefined
+  >(undefined);
+  const [loading, setLoading] = useState(false);
 
-  const handleFormSubmit = () => {};
+  const handleFormSubmit = async (username: string, password: string) => {
+    setLoading(true);
+    setError(null);
+
+    const result = await sendCreateAccount(username, password);
+
+    if (result.success && result.data) {
+      setLoading(false);
+      return;
+    }
+
+    setCreateAccountError(result.error);
+  };
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const usernameValue = e.target.value;
