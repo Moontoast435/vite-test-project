@@ -1,14 +1,17 @@
+import { Account } from "../features/SignUp/types/accountTypes";
+
 type AccountCreatedResponse = {
   StatusCode: string;
   Message: string;
-};
+  Account: Account;
+}
 
 export const sendCreateAccount = async (
   username: string,
   password: string
 ): Promise<{
   success: boolean;
-  data: AccountCreatedResponse | null;
+  data?: AccountCreatedResponse | null;
   error?: string;
 }> => {
   try {
@@ -31,7 +34,7 @@ export const sendCreateAccount = async (
       throw new Error("Network response was not ok");
     }
 
-    const data = await response.json();
+    const data : AccountCreatedResponse =  await response.json();
     return {
       success: true,
       data: data, // Include the API response data

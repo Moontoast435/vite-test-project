@@ -1,6 +1,6 @@
-import { FormEvent, useState } from "react";
+import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import {
-  Account,
   ErrorSignUp,
 } from "../../features/TodoMainScreen/types/todoInterfaceTypes";
 import {
@@ -9,7 +9,17 @@ import {
   validatePasswordMatch,
 } from "../../utils/validation";
 
+import { AccountContext } from "../../contexts/AccountContext";
+
 import { sendCreateAccount } from "../../utils/requests";
+
+import {Account} from "../../features/SignUp/types/accountTypes";
+
+type AccountCreatedResponse = {
+  StatusCode: string;
+  Message: string;
+  Account: Account;
+};
 
 import "./styles.css";
 
@@ -18,19 +28,36 @@ export default function SignUp() {
   const [passwordInput, setPasswordInput] = useState("");
   const [confirmPasswordInput, setConfirmPasswordInput] = useState("");
   const [error, setError] = useState<ErrorSignUp | null>(null);
+
+  const [accountCreatedResponse, setAccountCreatedResponse] = useState<AccountCreatedResponse | null>(null);
+
+  const navigate = useNavigate();
+
   const [createAccountError, setCreateAccountError] = useState<
     string | undefined
   >(undefined);
+
   const [loading, setLoading] = useState(false);
 
-  const handleFormSubmit = async (username: string, password: string) => {
+  const accountContext = useContext(AccountContext);
+
+  const { account, setAccount } = accountContext;
+
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     setLoading(true);
     setError(null);
 
-    const result = await sendCreateAccount(username, password);
+    const result = await sendCreateAccount(usernameInput, passwordInput);
 
     if (result.success && result.data) {
       setLoading(false);
+      setAccountCreatedResponse(result.data);
+
+      if (result.data.Account) {
+        setAccount(result.data.Account);
+        navigate("/home");
+      }
       return;
     }
 
@@ -71,6 +98,9 @@ export default function SignUp() {
   const handleConfirmPasswordChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
+    if (passwordInput === "") {
+      return; 
+    }
     const confirmPasswordValue = e.target.value;
     setPasswordInput(confirmPasswordValue);
 
@@ -89,7 +119,7 @@ export default function SignUp() {
   return (
     <>
       <div className="signup-container">
-        <form>
+        <form onSubmit={handleFormSubmit}>
           <fieldset className="signUpFieldset">
             <label htmlFor="signupUsernameInput">Username: </label>
             <input
@@ -116,7 +146,7 @@ export default function SignUp() {
             ></input>
             {error?.passwordMatchError && <div>{error.passwordMatchError}</div>}
           </fieldset>
-          <button type="submit" id="signUpSubmitBtn">
+          <button id="signUpSubmitBtn" disabled={!!error?.usernameError || !!error?.passwordError || !!error?.passwordMatchError} type="submit">
             Create account
           </button>
         </form>

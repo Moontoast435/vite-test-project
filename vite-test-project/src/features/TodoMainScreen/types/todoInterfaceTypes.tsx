@@ -5,11 +5,6 @@ export type Todo = {
   userId: string;
 };
 
-export type Account = {
-  userId: string;
-  userName: string;
-  password: string;
-};
 
 export type ErrorSignUp = {
   usernameError: string | null;

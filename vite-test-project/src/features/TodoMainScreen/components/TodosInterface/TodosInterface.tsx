@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import "./styles.css";
 import edit from "../../../../assets/edit-text.png";
 import EditTodo from "../EditTodo/EditTodo";
@@ -6,6 +6,7 @@ import ClearAllTodos from "../ClearAllTodos/ClearAllTodos";
 import DeleteTodo from "../DeleteTodo/DeleteTodo";
 import MarkAsComplete from "../MarkAsComplete/MarkAsComplete";
 import { Todo } from "../../types/todoInterfaceTypes";
+import { AccountContext } from "../../../../contexts/AccountContext";
 
 export default function TodosInterface() {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -13,6 +14,10 @@ export default function TodosInterface() {
   const [error, setError] = useState(null);
   const [inputValue, setInputValue] = useState("");
   const [open, setOpen] = useState(NaN);
+
+  const accountContext = useContext(AccountContext);
+
+  const { account, setAccount } = accountContext;
 
   const sendCreateTodo = (description: string) => {
     if (description.trim() == "") {
@@ -107,7 +112,7 @@ export default function TodosInterface() {
       </div>
       <div className="todos-container">
         {todos &&
-          todos.map((todo, i) => (
+          todos.filter((todo) => todo.userId == account?.userId).map((todo, i) => (
             <div key={todo.id} className="todo">
               <div className="todo-header">
                 <img
