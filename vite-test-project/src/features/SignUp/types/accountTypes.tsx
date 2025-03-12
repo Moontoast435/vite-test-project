@@ -1,10 +1,13 @@
 export type Account = {
-    userId: string;
-    userName: string;
-    password: string;
-  };
-  
-export interface AccountContextType {
-    account: Account | null;
-    setAccount: React.Dispatch<React.SetStateAction<Account | null>>;
-}
+  userId: string;
+  userName: string;
+  password: string;
+};
+
+export type AccountContextType = {
+  account: Account | null;
+  isLoggedIn: boolean;
+  login: () => void;
+  logout: () => void;
+  setAccount: (account: Account) => void;
+};

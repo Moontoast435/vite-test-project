@@ -19,6 +19,8 @@ export default function TodosInterface() {
 
   const { account, setAccount } = accountContext;
 
+  console.log(account);
+
   const sendCreateTodo = (description: string) => {
     if (description.trim() == "") {
       alert("No description entered.");
@@ -112,27 +114,32 @@ export default function TodosInterface() {
       </div>
       <div className="todos-container">
         {todos &&
-          todos.filter((todo) => todo.userId == account?.userId).map((todo, i) => (
-            <div key={todo.id} className="todo">
-              <div className="todo-header">
-                <img
-                  src={edit}
-                  className="todo-edit-btn"
-                  onClick={() => setOpen(i)}
+          todos
+            .filter((todo) => todo.userId == account?.userId)
+            .map((todo, i) => (
+              <div key={todo.id} className="todo">
+                <div className="todo-header">
+                  <img
+                    src={edit}
+                    className="todo-edit-btn"
+                    onClick={() => setOpen(i)}
+                  />
+                  <DeleteTodo onShow={() => onClickEditHandle()} todo={todo} />
+                </div>
+                <p className="todo-description">
+                  Description: {todo.description}
+                </p>
+                <MarkAsComplete
+                  onShow={() => onClickEditHandle()}
+                  todo={todo}
                 />
-                <DeleteTodo onShow={() => onClickEditHandle()} todo={todo} />
+                <EditTodo
+                  todo={todo}
+                  onShow={() => onClickEditHandle()}
+                  isActive={open === i}
+                />
               </div>
-              <p className="todo-description">
-                Description: {todo.description}
-              </p>
-              <MarkAsComplete onShow={() => onClickEditHandle()} todo={todo} />
-              <EditTodo
-                todo={todo}
-                onShow={() => onClickEditHandle()}
-                isActive={open === i}
-              />
-            </div>
-          ))}
+            ))}
       </div>
     </div>
   );

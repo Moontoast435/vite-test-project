@@ -1,8 +1,6 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  ErrorSignUp,
-} from "../../features/TodoMainScreen/types/todoInterfaceTypes";
+import { ErrorSignUp } from "../../features/TodoMainScreen/types/todoInterfaceTypes";
 import {
   validateUsername,
   validatePassword,
@@ -13,7 +11,7 @@ import { AccountContext } from "../../contexts/AccountContext";
 
 import { sendCreateAccount } from "../../utils/requests";
 
-import {Account} from "../../features/SignUp/types/accountTypes";
+import { Account } from "../../features/SignUp/types/accountTypes";
 
 type AccountCreatedResponse = {
   StatusCode: string;
@@ -29,7 +27,8 @@ export default function SignUp() {
   const [confirmPasswordInput, setConfirmPasswordInput] = useState("");
   const [error, setError] = useState<ErrorSignUp | null>(null);
 
-  const [accountCreatedResponse, setAccountCreatedResponse] = useState<AccountCreatedResponse | null>(null);
+  const [accountCreatedResponse, setAccountCreatedResponse] =
+    useState<AccountCreatedResponse | null>(null);
 
   const navigate = useNavigate();
 
@@ -99,7 +98,7 @@ export default function SignUp() {
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (passwordInput === "") {
-      return; 
+      return;
     }
     const confirmPasswordValue = e.target.value;
     setPasswordInput(confirmPasswordValue);
@@ -146,7 +145,15 @@ export default function SignUp() {
             ></input>
             {error?.passwordMatchError && <div>{error.passwordMatchError}</div>}
           </fieldset>
-          <button id="signUpSubmitBtn" disabled={!!error?.usernameError || !!error?.passwordError || !!error?.passwordMatchError} type="submit">
+          <button
+            id="signUpSubmitBtn"
+            disabled={
+              !!error?.usernameError ||
+              !!error?.passwordError ||
+              !!error?.passwordMatchError
+            }
+            type="submit"
+          >
             Create account
           </button>
         </form>
