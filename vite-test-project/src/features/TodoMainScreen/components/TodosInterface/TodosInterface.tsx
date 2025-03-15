@@ -7,6 +7,7 @@ import DeleteTodo from "../DeleteTodo/DeleteTodo";
 import MarkAsComplete from "../MarkAsComplete/MarkAsComplete";
 import { Todo } from "../../types/todoInterfaceTypes";
 import { AccountContext } from "../../../../contexts/AccountContext";
+import AuthService from "../../../../AuthService";
 
 export default function TodosInterface() {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -14,6 +15,10 @@ export default function TodosInterface() {
   const [error, setError] = useState(null);
   const [inputValue, setInputValue] = useState("");
   const [open, setOpen] = useState(NaN);
+
+  const authService = new AuthService();
+
+  const accessToken = authService.getAccessToken();
 
   const accountContext = useContext(AccountContext);
 
@@ -33,6 +38,7 @@ export default function TodosInterface() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${accessToken}`
         },
         mode: "cors",
       }
@@ -71,6 +77,7 @@ export default function TodosInterface() {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${accessToken}`
       },
       mode: "cors",
     })
