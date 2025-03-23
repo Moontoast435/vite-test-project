@@ -1,14 +1,11 @@
 import React from 'react';
-import AuthService from '../../AuthService';
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useAuth0 } from "@auth0/auth0-react";
 
 export const StartSession = () => {
-    const authService = new AuthService();
-    const navigate = useNavigate();
-  
+    const { loginWithRedirect } = useAuth0();
     useEffect(() => {
-      authService.handleAuthentication(navigate);
+      loginWithRedirect();
     }, []);
 
     return (

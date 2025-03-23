@@ -2,6 +2,11 @@ import auth0 from "auth0-js";
 import { AUTH_CONFIG } from "../Auth0Config";
 import { NavigateFunction } from "react-router-dom";
 
+type AccountStorage = {
+  access_token: string;
+  id_token: string;
+  expires_at: string;
+};
 
 export default class AuthService {
   auth0 = new auth0.WebAuth({
@@ -34,24 +39,40 @@ export default class AuthService {
       && authResult.idToken
     ) {
       let expiresAt = JSON.stringify((authResult.expiresIn * 1000) + new Date().getTime());
-      localStorage.setItem('access_token', authResult.accessToken);
-      localStorage.setItem('id_token', authResult.idToken);
-      localStorage.setItem('expires_at', expiresAt);
+      const profile = {
+        access_token: authResult.accessToken, 
+        id_token: authResult.idToken,
+        expires_at: expiresAt
+      };
+
+      localStorage.setItem('profile', JSON.stringify(profile));
+
+      // localStorage.setItem('access_token', authResult.accessToken);
+      // localStorage.setItem('id_token', authResult.idToken);
+      // localStorage.setItem('expires_at', expiresAt);
     } else {
       console.error('authResult.expiresIn is undefined');
     }
   }
 
   isAuthenticated() {
-    let expiresAt = JSON.parse(localStorage.getItem('expires_at') || '0');
-    return new Date().getTime() < expiresAt;
+    const profile = JSON.parse(localStorage.getItem('profile') || '{}');
+    return new Date().getTime() < profile.expires_at;
   }
 
   getAccessToken() {
-    const accessToken = localStorage.getItem('access_token');
-    if (!accessToken) {
+    const profile = JSON.parse(localStorage.getItem('profile') || '{}');
+    if (!profile.access_token) {
       throw new Error('No access token found');
     }
-    return accessToken;
+    return profile.access_token;
+  }
+
+  logout() {
+    // localStorage.removeItem('access_token');
+    // localStorage.removeItem('id_token');
+    // localStorage.removeItem('expires_at');
+
+
   }
 }

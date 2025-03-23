@@ -1,22 +1,16 @@
-import { PropsWithChildren, useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { PropsWithChildren } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
 import "./styles.css";
 
 export default function NavBar(props: PropsWithChildren) {
-  const [signedIn, setSignedIn] = useState(false);
-
+  const { logout } = useAuth0();
 
   return (
     <div className="navbar-container">
       <div className="navbar">
         <div className="navbar-title">Todo List</div>
         <div className="navbar-account-buttons">
-          {signedIn ? (
-            <button>Log out</button>
-          ) : (
-            <div className="navbar-loggedout-buttons">
-            </div>
-          )}
+            <button onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}>Log out</button>
         </div>
       </div>
       <div>{props.children}</div>

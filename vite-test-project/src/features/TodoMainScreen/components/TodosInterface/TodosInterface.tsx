@@ -8,6 +8,8 @@ import MarkAsComplete from "../MarkAsComplete/MarkAsComplete";
 import { Todo } from "../../types/todoInterfaceTypes";
 import { AccountContext } from "../../../../contexts/AccountContext";
 import AuthService from "../../../../AuthService";
+import { useAuth0 } from "@auth0/auth0-react";
+import { AUTH_CONFIG } from "../../../../../Auth0Config";
 
 export default function TodosInterface() {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -15,16 +17,54 @@ export default function TodosInterface() {
   const [error, setError] = useState(null);
   const [inputValue, setInputValue] = useState("");
   const [open, setOpen] = useState(NaN);
+  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
 
-  const authService = new AuthService();
+  interface UserMetadata {
+    user_id: string;
+  }
+  
+  const [userMetadata, setUserMetadata] = useState<UserMetadata | null>(null);
+  const [accessTokenState, setAccessToken] = useState("");
 
-  const accessToken = authService.getAccessToken();
+  useEffect(() => {
+    if (!user?.sub) return;
+    const getUserMetadata = async () => {
+      const domain = AUTH_CONFIG.domain;
+      console.log("domain: " + domain);
+      try {
+        const accessToken = await getAccessTokenSilently({
+          authorizationParams: {
+            audience: AUTH_CONFIG.audience,
+            scope: "read:current_user",
+          },
+        });
 
-  const accountContext = useContext(AccountContext);
+        setAccessToken(accessToken);
+        const userDetailsByIdUrl = user ? `https://${domain}/api/v2/users/${user.sub}` : "";
+  
+        const metadataResponse = await fetch(userDetailsByIdUrl, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
 
-  const { account, setAccount } = accountContext;
-
-  console.log(account);
+        // const metadataText = await metadataResponse.text();
+        // console.log("metadataText: " + metadataText);
+        const { user_metadata } = await metadataResponse.json();
+  
+        setUserMetadata(user_metadata);
+        sendGetAllTodos(accessToken);
+      } catch (e) {
+        if (e instanceof Error) {
+          console.log(e.message);
+        } else {
+          console.log("An unknown error occurred");
+        }
+      }
+    };
+  
+    getUserMetadata();
+  }, [getAccessTokenSilently, user?.sub]);
 
   const sendCreateTodo = (description: string) => {
     if (description.trim() == "") {
@@ -38,7 +78,7 @@ export default function TodosInterface() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${accessToken}`
+          "Authorization": `Bearer ${accessTokenState}`
         },
         mode: "cors",
       }
@@ -65,14 +105,11 @@ export default function TodosInterface() {
 
   const onClickEditHandle = () => {
     setOpen(NaN);
-    sendGetAllTodos();
+    sendGetAllTodos(accessTokenState);
   };
 
-  useEffect(() => {
-    sendGetAllTodos();
-  }, []);
-
-  const sendGetAllTodos = () => {
+  const sendGetAllTodos = (accessToken : string) => {
+    console.log(accessToken);
     fetch("https://localhost:44343/api/Todo/GetAllTodos", {
       method: "GET",
       headers: {
@@ -121,9 +158,8 @@ export default function TodosInterface() {
       </div>
       <div className="todos-container">
         {todos &&
-          todos
-            .filter((todo) => todo.userId == account?.userId)
-            .map((todo, i) => (
+          todos.filter((todo) => todo.userId.trim() === user?.sub?.trim())
+          .map((todo, i) => (
               <div key={todo.id} className="todo">
                 <div className="todo-header">
                   <img

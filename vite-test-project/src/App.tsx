@@ -1,39 +1,33 @@
 import NavBar from "./hocs/NavBar/NavBar";
-import { AccountContext, AccountProvider } from "./contexts/AccountContext";
-import { Routes, Route, BrowserRouter as Router, useNavigate } from 'react-router-dom'
+import { Routes, Route, BrowserRouter as Router} from 'react-router-dom'
 import * as Pages from "./Pages/index";
 import "./App.css";
-import { useContext} from "react";
-import AuthService from "./AuthService";
+import { Auth0Provider } from '@auth0/auth0-react';
+import { AUTH_CONFIG } from "../Auth0Config";
 
 
 function App() {
-  const accountContext = useContext(AccountContext);
-
-  const authService = new AuthService();
-
-  const renderHome = () => {
-    if (!authService.isAuthenticated()) {
-      authService.login();
-      return <div><p>Redirecting to the authentication service...</p></div>;
-    }
-    return <Pages.Home authService={authService} />;
-  };
-
-
 
   return (
     <>
-      <AccountProvider value={accountContext}>
+      <Auth0Provider
+    domain={AUTH_CONFIG.domain}
+    clientId={AUTH_CONFIG.clientID}
+    authorizationParams={{
+      redirect_uri: AUTH_CONFIG.redirectUri,
+      audience: `https://${AUTH_CONFIG.domain}/api/v2/`,
+      scope: "read:current_user update:current_user_metadata"
+    }}
+      > 
+      <Router>
         <NavBar>
-        <Router>
           <Routes>
-            <Route path="/" element={renderHome()} />
-            <Route path="/startSession" element={<Pages.StartSession/>} />
+            <Route path="/" element={<Pages.StartSession/>}/>
+            <Route path="/Home" element={<Pages.Home/>} />
           </Routes>
-        </Router>artSession()
         </NavBar>
-      </AccountProvider>    
+      </Router>    
+      </Auth0Provider>    
     </>
   );
 }
